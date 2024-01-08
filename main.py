@@ -67,7 +67,7 @@ while True:
     print(main_button.text)
 
     # деремся на главной
-    time.sleep(1)
+    time.sleep(5)
     for i in range(3):
         try:
             land_mob = browser.find_element(By.CSS_SELECTOR, 'a.land-mob-link')
