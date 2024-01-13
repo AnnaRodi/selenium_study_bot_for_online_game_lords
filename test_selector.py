@@ -8,11 +8,10 @@ from selenium.webdriver.common.by import By
 from config import cookies
 
 browser = webdriver.Chrome()
-
+browser.implicitly_wait(5)
 #открываем сайт, логинимся и переходим в игру
 try:
     browser.get("https://vmmo.mobi/menu")
-
     browser.implicitly_wait(5)
     play_button = browser.find_element(By.CSS_SELECTOR, 'li:nth-child(1) .va-m')
     print('play_button текст: ', play_button.text)
@@ -39,12 +38,107 @@ except NoSuchElementException as entry_error:
     print(entry_error)
 
 count = 0
-land_point = 1  #  1 - in main, 2 - in land
+visit_count = 0
+not_accept_visit_count = 0
+#land_point = 1  #  1 - in main, 2 - in land
+current_url = browser.current_url
+
+def go_home(): #возвращаемся домой (на страницу main) с любой страницы
+        try:
+            main_button = browser.find_element(By.CSS_SELECTOR, 'a[href="/Land"]')
+            main_button.click()
+        except Exception as err:
+            print('def go_home err: ', err)
+        time.sleep(5)
+
+def take_money():  #собираем дань с владений
+    global count
+    try:
+        land_butt=browser.find_element(By.CSS_SELECTOR, 'a[href="/Land/My"')
+        if land_butt.text.strip() == 'Владения':   #проверяем готова ли дань
+                                                   # (она готова когда текст == Владения)
+            land_butt.click()
+            # собираем дань
+            take_button = browser.find_element(By.CSS_SELECTOR, 'a._marble')
+            take_button.click()
+            count+=1
+            print('3 Собрали дань: ', count, ' раз.')
+        else:
+            print('4 It is not land time')
+    except Exception as err:
+        print('def take_money err: ', err)
+    time.sleep(5)
+
+def do_patrol():      #дозор проводим
+    try:
+        patrol_button = browser.find_element(By.XPATH, '//span[contains(text(), "Дозор")]')
+        print(patrol_button.text)
+        if patrol_button.text.strip() == 'Дозор':
+            print('Patrol time!')
+            patrol_button.click()
+            for i in range(10):
+                # собираем дань
+                take_button = browser.find_element(By.CSS_SELECTOR, 'div.main-button-inner')
+                take_button.click()
+                print('проводим дозор '+ str(i))
+            # кликаем на главную
+            main_button = browser.find_element(By.CSS_SELECTOR, 'a[href="/Land"]')
+            main_button.click()
+            print(main_button.text)
+        else:
+            print('It is not patrol time')
+        time.sleep(5)
+    except Exception as err:
+        print('def do_patrol err: ', err)
+
+def do_taverna_meet():  #встречи в таверне
+    global visit_count
+    global not_accept_visit_count
+    #допустимые посетители - с иконкой солдата, пустого разговора, золота
+    good_visitors_image_url = ["https://lordy.mobi/images/icons/army.png", "https://lords.mobi/images/tavern/icon_talk.png", "https://lordy.mobi/images/tavern/icon_talk.png", "https://lordy.mobi/images/icons/gold.png"]
+    bad_visitors_image_url = ["https://lordy.mobi/images/icons/ruby.png"]
+    try:
+        butt=browser.find_element(By.CSS_SELECTOR, 'a[href="/Tavern"')
+        butt.click()
+        visitors = browser.find_element(By.CSS_SELECTOR, '.btn_o_inner img')
+        visitors_attribute = visitors.get_attribute('src')
+        print('visitor_attribute: ', visitors_attribute)
+        if visitors_attribute in good_visitors_image_url: # or visitors_attribute in ["https://lordy.mobi/images/tavern/icon_talk.png"]:
+            visitors.click()
+            visit_count+=1
+            print('Accept visitors: ', visitors_attribute, 'accept visit_count: ', visit_count)
+        elif visitors_attribute in bad_visitors_image_url:
+            butt = browser.find_element(By.XPATH, '//span[contains(text(), "Отказаться")]')
+            butt.click()
+            active_butt = browser.find_element(By.CLASS_NAME, '_active')
+            active_butt.click()
+            not_accept_visit_count += 1
+            print('Not accept bad visitors: ', visitors_attribute, 'count: ', not_accept_visit_count)
+        else:
+            butt= browser.find_element(By.XPATH, '//span[contains(text(), "Пропустить")]')
+            butt.click()
+            not_accept_visit_count+=1
+            print('Not accept visitors: ', visitors_attribute, 'count: ', not_accept_visit_count)
+    except Exception as err:
+        print('do_taverna_meet err: ', err)
+    time.sleep(5)
+
+
 while True:
+    take_money()
+    go_home()
+    do_patrol()
+    go_home()
+    do_taverna_meet()
+    go_home()
+
+
+'''    # def take_money
     try:
         #владения, собираем дань
         land_butt=browser.find_element(By.CSS_SELECTOR, 'a[href="/Land/My"')
-        print('1 text: ', land_butt.text)
+        print('1 butt_text: ', land_butt.text, ' current url: ', browser.current_url)
+        current_url = browser.current_url
         if land_butt.text.strip() == 'Владения':
             print('2 land time!')
             land_butt.click()
@@ -53,26 +147,32 @@ while True:
             take_button.click()
             count+=1
             print('3 Собрали дань: ', count, ' раз.')
-            land_point = 2
+            #land_point = 2
+            current_url = browser.current_url
         else:
             print('4 It is not land time')
     except Exception as err:
         print(err)
 
-    if land_point == 2:  # 2 -lord is in the land
+    #if land_point == 2:  # 2 -lord is in the land
+    #def go_home
+    if current_url != 'https://lordy.mobi/Land': #если текущий юрл - не главная
+                                                    # то переходим на главную
         try:
             # кликаем на главную
             main_button = browser.find_element(By.CSS_SELECTOR, 'a[href="/Land"]')
             main_button.click()
             print('5', main_button.text)
             time.sleep(5)
+            current_url= browser.current_url
         except Exception as err:
             print(err)
     else:
         print(' 6 pass')
     print('7 Всего собрали дань: ', count, ' раз.')
     time.sleep(10)
-    '''
+    
+    #def do_patrol
         #дозор, проводим
         patrol_button = browser.find_element(By.XPATH, '//span[contains(text(), "Дозор")]')
         print(patrol_button.text)
@@ -91,11 +191,8 @@ while True:
         else:
             print('It is not patrol time')
         time.sleep(5)
-    '''
 
-
-
-    '''#играем
+    #играем
     while True:
         #кликаем на главную
         main_button = browser.find_element(By.CSS_SELECTOR, 'a[href="/Land"]')
@@ -124,6 +221,5 @@ while True:
         #кликаем на главную
         main_button = browser.find_element(By.CSS_SELECTOR, 'a[href="/Land"]')
         main_button.click()
-        print(main_button.text)'''
-
-
+        print(main_button.text)
+'''
