@@ -108,12 +108,24 @@ def do_taverna_meet():  #встречи в таверне
             visit_count+=1
             print('Accept visitors: ', visitors_attribute, 'accept visit_count: ', visit_count)
         elif visitors_attribute in bad_visitors_image_url:
-            butt = browser.find_element(By.XPATH, '//span[contains(text(), "Отказаться")]')
-            butt.click()
-            active_butt = browser.find_element(By.CLASS_NAME, '_active')
-            active_butt.click()
-            not_accept_visit_count += 1
-            print('Not accept bad visitors: ', visitors_attribute, 'count: ', not_accept_visit_count)
+            try:
+                butt = browser.find_element(By.XPATH, '//span[contains(text(), "Отказаться")]')
+                butt.click()
+                active_butt = browser.find_element(By.CLASS_NAME, '_active')
+                active_butt.click()
+                not_accept_visit_count += 1
+                print('Not accept bad visitors: ', visitors_attribute, 'count: ', not_accept_visit_count)
+            except Exception as err:
+                print(err)
+            try:
+                butt = browser.find_element(By.XPATH, '//span[contains(text(), "Нет")]')
+                butt.click()
+                active_butt = browser.find_element(By.CLASS_NAME, '_active')
+                active_butt.click()
+                not_accept_visit_count += 1
+                print('Not accept bad visitors: ', visitors_attribute, 'count: ', not_accept_visit_count)
+            except Exception as err:
+                print(err)
         else:
             butt= browser.find_element(By.XPATH, '//span[contains(text(), "Пропустить")]')
             butt.click()
