@@ -99,6 +99,7 @@ def do_taverna_meet():  #встречи в таверне
     global not_accept_visit_count
     #допустимые посетители - с иконкой солдата, пустого разговора, золота
     good_visitors_image_url = ["https://lordy.mobi/images/icons/army.png", "https://lords.mobi/images/tavern/icon_talk.png", "https://lordy.mobi/images/tavern/icon_talk.png", "https://lordy.mobi/images/icons/gold.png"]
+    #недопустимые - просят рубины
     bad_visitors_image_url = ["https://lordy.mobi/images/icons/ruby.png"]
     try:
         butt=browser.find_element(By.CSS_SELECTOR, 'a[href="/Tavern"')
@@ -106,9 +107,24 @@ def do_taverna_meet():  #встречи в таверне
         visitors = browser.find_element(By.CSS_SELECTOR, '.btn_o_inner img')
         visitors_attribute = visitors.get_attribute('src')
         print('visitor_attribute: ', visitors_attribute)
-        #if visitors_attribute not in bad_visitors_image_url:
+        if visitors_attribute not in bad_visitors_image_url:  #если посетитель не просит рубинов
+            visitors.click()
+            #проверяем всплывающую кнопку
+            active_butt = browser.find_element(By.CLASS_NAME, '_active')
+            if active_butt:
+                print('Всплывающая кнопка')
+                active_butt.click()
+                visit_count += 1
+            else:
+                print('Нет всплывающей кнопки')
+            print('Accept visitors: ', visitors_attribute, 'accept visit_count: ', visit_count)
+        else:
+            butt= browser.find_element(By.XPATH, '//span[contains(text(), "Пропустить")]')
+            butt.click()
+            not_accept_visit_count+=1
+            print('Not accept visitors: ', visitors_attribute, 'count: ', not_accept_visit_count)
 
-        if visitors_attribute in good_visitors_image_url: # or visitors_attribute in ["https://lordy.mobi/images/tavern/icon_talk.png"]:
+        '''if visitors_attribute in good_visitors_image_url: # or visitors_attribute in ["https://lordy.mobi/images/tavern/icon_talk.png"]:
             visitors.click()
             visit_count+=1
             print('Accept visitors: ', visitors_attribute, 'accept visit_count: ', visit_count)
@@ -130,18 +146,15 @@ def do_taverna_meet():  #встречи в таверне
                 not_accept_visit_count += 1
                 print('Not accept bad visitors: ', visitors_attribute, 'count: ', not_accept_visit_count)
             except Exception as err:
-                print(err)
-        else:
-            butt= browser.find_element(By.XPATH, '//span[contains(text(), "Пропустить")]')
-            butt.click()
-            not_accept_visit_count+=1
-            print('Not accept visitors: ', visitors_attribute, 'count: ', not_accept_visit_count)
+                print(err)'''
+
     except Exception as err:
         print('do_taverna_meet err: ', err)
     time.sleep(1)
     print('Сходили в таверну')
 
 def check_army(): #проверяем сколько солдат в наличии
+    soldiers = None
     try:
         lord_resource = browser.find_element(By.CSS_SELECTOR, 'span.resource:nth-child(1) span')
         soldiers = lord_resource.text.strip()
@@ -156,12 +169,12 @@ def check_army(): #проверяем сколько солдат в налич�
 
 def fight_glass_rat_raid():
     try:
-        #raid_butt=browser.find_element(By.CSS_SELECTOR, 'a[href="/SingleRaids"')
-        #raid_butt.click()
-        #raid_butt = browser.find_element(By.CSS_SELECTOR, 'a[href="/SingleRaid/NewYear2024"')
-        #raid_butt.click()
-        #butt = browser.find_element(By.CSS_SELECTOR, 'div#lvl-37')
-        #butt.click()
+        raid_butt=browser.find_element(By.CSS_SELECTOR, 'a[href="/SingleRaids"')
+        raid_butt.click()
+        raid_butt = browser.find_element(By.CSS_SELECTOR, 'a[href="/SingleRaid/NewYear2024"')
+        raid_butt.click()
+        butt = browser.find_element(By.CSS_SELECTOR, 'div#lvl-37')
+        butt.click()
         rat_health = browser.find_element(By.CSS_SELECTOR, '.combat-stats .text-left').text.strip()[:-1]
         print(rat_health)
         while rat_health:
@@ -173,7 +186,7 @@ def fight_glass_rat_raid():
         continue_butt.click()
     except Exception as err:
         print('fight glass rat raid err: ', err)
-    time.sleep(1)
+    time.sleep(5)
     print('Сразились в рейде с ледяными крысами')
 
 
