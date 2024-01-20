@@ -49,7 +49,8 @@ def go_home(): #возвращаемся домой (на страницу main)
             main_button.click()
         except Exception as err:
             print('def go_home err: ', err)
-        time.sleep(5)
+        time.sleep(1)
+        print('Пришли домой')
 
 def take_money():  #собираем дань с владений
     global count
@@ -67,7 +68,8 @@ def take_money():  #собираем дань с владений
             print('4 It is not land time')
     except Exception as err:
         print('def take_money err: ', err)
-    time.sleep(5)
+    time.sleep(1)
+    print('Собрали дань')
 
 def do_patrol():      #дозор проводим
     try:
@@ -87,9 +89,10 @@ def do_patrol():      #дозор проводим
             print(main_button.text)
         else:
             print('It is not patrol time')
-        time.sleep(5)
+        time.sleep(1)
     except Exception as err:
         print('def do_patrol err: ', err)
+    print('Сходили в дозор')
 
 def do_taverna_meet():  #встречи в таверне
     global visit_count
@@ -103,6 +106,8 @@ def do_taverna_meet():  #встречи в таверне
         visitors = browser.find_element(By.CSS_SELECTOR, '.btn_o_inner img')
         visitors_attribute = visitors.get_attribute('src')
         print('visitor_attribute: ', visitors_attribute)
+        #if visitors_attribute not in bad_visitors_image_url:
+
         if visitors_attribute in good_visitors_image_url: # or visitors_attribute in ["https://lordy.mobi/images/tavern/icon_talk.png"]:
             visitors.click()
             visit_count+=1
@@ -133,9 +138,46 @@ def do_taverna_meet():  #встречи в таверне
             print('Not accept visitors: ', visitors_attribute, 'count: ', not_accept_visit_count)
     except Exception as err:
         print('do_taverna_meet err: ', err)
-    time.sleep(5)
+    time.sleep(1)
+    print('Сходили в таверну')
+
+def check_army(): #проверяем сколько солдат в наличии
+    try:
+        lord_resource = browser.find_element(By.CSS_SELECTOR, 'span.resource:nth-child(1) span')
+        soldiers = lord_resource.text.strip()
+        print('soldiers: ', soldiers)
+        if int(soldiers)>5:
+            return True
+        else:
+            return False
+    except Exception as err:
+        print('check_army err: ', err)
+    print('Проверили количество солдат. Количество = ', soldiers)
+
+def fight_glass_rat_raid():
+    try:
+        #raid_butt=browser.find_element(By.CSS_SELECTOR, 'a[href="/SingleRaids"')
+        #raid_butt.click()
+        #raid_butt = browser.find_element(By.CSS_SELECTOR, 'a[href="/SingleRaid/NewYear2024"')
+        #raid_butt.click()
+        #butt = browser.find_element(By.CSS_SELECTOR, 'div#lvl-37')
+        #butt.click()
+        rat_health = browser.find_element(By.CSS_SELECTOR, '.combat-stats .text-left').text.strip()[:-1]
+        print(rat_health)
+        while rat_health:
+            attack_butt = browser.find_element(By.CSS_SELECTOR, 'a[href="/SingleRaids/Hit"')
+            attack_butt.click()
+            rat_health = browser.find_element(By.CSS_SELECTOR, '.combat-stats .text-left').text.strip()[:-1]
+            print(rat_health)
+        continue_butt = browser.find_element(By.XPATH, '//span[contains(text(), "Продолжить рейд")]')
+        continue_butt.click()
+    except Exception as err:
+        print('fight glass rat raid err: ', err)
+    time.sleep(1)
+    print('Сразились в рейде с ледяными крысами')
 
 
+count_total = 0
 while True:
     take_money()
     go_home()
@@ -143,6 +185,14 @@ while True:
     go_home()
     do_taverna_meet()
     go_home()
+    time.sleep(1)
+    if check_army():
+        fight_glass_rat_raid()
+    else:
+        print('No soldiers for fight')
+    count_total+=1
+    print('Количество пройденных циклов', count_total)
+
 
 
 '''    # def take_money
