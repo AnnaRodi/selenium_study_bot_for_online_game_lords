@@ -109,6 +109,7 @@ def do_taverna_meet():  #встречи в таверне
         print('visitor_attribute: ', visitors_attribute)
         if visitors_attribute not in bad_visitors_image_url:  #если посетитель не просит рубинов
             visitors.click()
+            print('not bad')
             #проверяем всплывающую кнопку
             active_butt = browser.find_element(By.CLASS_NAME, '_active')
             if active_butt:
@@ -119,7 +120,8 @@ def do_taverna_meet():  #встречи в таверне
                 print('Нет всплывающей кнопки')
             print('Accept visitors: ', visitors_attribute, 'accept visit_count: ', visit_count)
         else:
-            butt= browser.find_element(By.XPATH, '//span[contains(text(), "Пропустить")]')
+            #butt= browser.find_element(By.XPATH, '//span[contains(text(), "Пропустить")]')
+            butt = browser.find_element(By.CSS_SELECTOR, 'a[href="/Tavern/Visitor_Skip"]')
             butt.click()
             not_accept_visit_count+=1
             print('Not accept visitors: ', visitors_attribute, 'count: ', not_accept_visit_count)
@@ -198,11 +200,11 @@ while True:
     go_home()
     do_taverna_meet()
     go_home()
-    time.sleep(1)
+    '''time.sleep(1)
     if check_army():
         fight_glass_rat_raid()
     else:
-        print('No soldiers for fight')
+        print('No soldiers for fight')'''
     count_total+=1
     print('Количество пройденных циклов', count_total)
 
