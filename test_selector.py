@@ -43,7 +43,7 @@ not_accept_visit_count = 0
 #land_point = 1  #  1 - in main, 2 - in land
 current_url = browser.current_url
 
-def go_home(): #возвращаемся домой (на страницу main) с любой страницы
+def go_home(browser): #возвращаемся домой (на страницу main) с любой страницы
         try:
             main_button = browser.find_element(By.CSS_SELECTOR, 'a[href="/Land"]')
             main_button.click()
@@ -52,7 +52,7 @@ def go_home(): #возвращаемся домой (на страницу main)
         time.sleep(1)
         print('Пришли домой')
 
-def take_money():  #собираем дань с владений
+def take_money(browser):  #собираем дань с владений
     global count
     try:
         land_butt=browser.find_element(By.CSS_SELECTOR, 'a[href="/Land/My"')
@@ -71,7 +71,7 @@ def take_money():  #собираем дань с владений
     time.sleep(1)
     print('Собрали дань')
 
-def do_patrol():      #дозор проводим
+def do_patrol(browser):      #дозор проводим
     try:
         patrol_button = browser.find_element(By.XPATH, '//span[contains(text(), "Дозор")]')
         print(patrol_button.text)
@@ -94,7 +94,7 @@ def do_patrol():      #дозор проводим
         print('def do_patrol err: ', err)
     print('Сходили в дозор')
 
-def do_taverna_meet():  #встречи в таверне
+def do_taverna_meet(browser):  #встречи в таверне
     global visit_count
     global not_accept_visit_count
     #допустимые посетители - с иконкой солдата, пустого разговора, золота
@@ -125,37 +125,20 @@ def do_taverna_meet():  #встречи в таверне
             butt.click()
             not_accept_visit_count+=1
             print('Not accept visitors: ', visitors_attribute, 'count: ', not_accept_visit_count)
-
-        '''if visitors_attribute in good_visitors_image_url: # or visitors_attribute in ["https://lordy.mobi/images/tavern/icon_talk.png"]:
-            visitors.click()
-            visit_count+=1
-            print('Accept visitors: ', visitors_attribute, 'accept visit_count: ', visit_count)
-        elif visitors_attribute in bad_visitors_image_url:
-            try:
-                butt = browser.find_element(By.XPATH, '//span[contains(text(), "Отказаться")]')
-                butt.click()
-                active_butt = browser.find_element(By.CLASS_NAME, '_active')
+            active_butt = browser.find_element(By.CLASS_NAME, '_active')
+            if active_butt:
+                print('Всплывающая кнопка')
                 active_butt.click()
-                not_accept_visit_count += 1
-                print('Not accept bad visitors: ', visitors_attribute, 'count: ', not_accept_visit_count)
-            except Exception as err:
-                print(err)
-            try:
-                butt = browser.find_element(By.XPATH, '//span[contains(text(), "Нет")]')
-                butt.click()
-                active_butt = browser.find_element(By.CLASS_NAME, '_active')
-                active_butt.click()
-                not_accept_visit_count += 1
-                print('Not accept bad visitors: ', visitors_attribute, 'count: ', not_accept_visit_count)
-            except Exception as err:
-                print(err)'''
+                visit_count += 1
+            else:
+                print('Нет всплывающей кнопки')
 
     except Exception as err:
         print('do_taverna_meet err: ', err)
     time.sleep(1)
     print('Сходили в таверну')
 
-def check_army(): #проверяем сколько солдат в наличии
+def check_army(browser): #проверяем сколько солдат в наличии
     soldiers = None
     try:
         lord_resource = browser.find_element(By.CSS_SELECTOR, 'span.resource:nth-child(1) span')
@@ -169,7 +152,7 @@ def check_army(): #проверяем сколько солдат в налич�
         print('check_army err: ', err)
     print('Проверили количество солдат. Количество = ', soldiers)
 
-def fight_glass_rat_raid():
+def fight_glass_rat_raid(browser):
     try:
         raid_butt=browser.find_element(By.CSS_SELECTOR, 'a[href="/SingleRaids"')
         raid_butt.click()
@@ -194,12 +177,14 @@ def fight_glass_rat_raid():
 
 count_total = 0
 while True:
-    take_money()
-    go_home()
-    do_patrol()
-    go_home()
-    do_taverna_meet()
-    go_home()
+    take_money(browser)
+    go_home(browser)
+    do_patrol(browser)
+    go_home(browser)
+    do_taverna_meet(browser)
+    go_home(browser)
+    print('ждем 1 сек')
+    time.sleep(1)
     '''time.sleep(1)
     if check_army():
         fight_glass_rat_raid()

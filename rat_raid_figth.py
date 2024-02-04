@@ -80,6 +80,7 @@ def fight_glass_rat_raid():
             while rat_health:
                 #attack_butt = browser.find_element(By.CSS_SELECTOR, 'a[href="/SingleRaids/Hit"')
                 attack_butt = browser.find_element(By.CSS_SELECTOR, 'a.btn-attack')#attack_butt = WebDriverWait(browser, 5).until_not(EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[href="/SingleRaids/Hit"')))
+                #attack_butt= WebDriverWait(browser, 5).until_not(EC.element_to_be_clickable((By.CSS_SELECTOR, 'a.btn-attack')))
                 attack_butt.click()
                 new_rat_health = browser.find_element(By.CSS_SELECTOR, '.combat-stats .text-left').text.strip()[:-1]
                 rat_health= new_rat_health
