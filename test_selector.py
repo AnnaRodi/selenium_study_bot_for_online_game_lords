@@ -35,7 +35,7 @@ try:
     game_lords = browser.find_element(By.CSS_SELECTOR, 'div.b-list-games:nth-child(5)')
     game_lords.click()
 except NoSuchElementException as entry_error:
-    print(entry_error)
+    print('entry_error')
 
 count = 0
 visit_count = 0
@@ -67,7 +67,7 @@ def take_money(browser):  #собираем дань с владений
         else:
             print('4 It is not land time')
     except Exception as err:
-        print('def take_money err: ', err)
+        print('def take_money err')
     time.sleep(1)
     print('Собрали дань')
 
@@ -91,7 +91,7 @@ def do_patrol(browser):      #дозор проводим
             print('It is not patrol time')
         time.sleep(1)
     except Exception as err:
-        print('def do_patrol err: ', err)
+        print('def do_patrol err')
     print('Сходили в дозор')
 
 def do_taverna_meet(browser):  #встречи в таверне
@@ -134,7 +134,7 @@ def do_taverna_meet(browser):  #встречи в таверне
                 print('Нет всплывающей кнопки')
 
     except Exception as err:
-        print('do_taverna_meet err: ', err)
+        print('do_taverna_meet err: ')
     time.sleep(1)
     print('Сходили в таверну')
 
@@ -194,94 +194,3 @@ while True:
     print('Количество пройденных циклов', count_total)
 
 
-
-'''    # def take_money
-    try:
-        #владения, собираем дань
-        land_butt=browser.find_element(By.CSS_SELECTOR, 'a[href="/Land/My"')
-        print('1 butt_text: ', land_butt.text, ' current url: ', browser.current_url)
-        current_url = browser.current_url
-        if land_butt.text.strip() == 'Владения':
-            print('2 land time!')
-            land_butt.click()
-            # собираем дань
-            take_button = browser.find_element(By.CSS_SELECTOR, 'a._marble')
-            take_button.click()
-            count+=1
-            print('3 Собрали дань: ', count, ' раз.')
-            #land_point = 2
-            current_url = browser.current_url
-        else:
-            print('4 It is not land time')
-    except Exception as err:
-        print(err)
-
-    #if land_point == 2:  # 2 -lord is in the land
-    #def go_home
-    if current_url != 'https://lordy.mobi/Land': #если текущий юрл - не главная
-                                                    # то переходим на главную
-        try:
-            # кликаем на главную
-            main_button = browser.find_element(By.CSS_SELECTOR, 'a[href="/Land"]')
-            main_button.click()
-            print('5', main_button.text)
-            time.sleep(5)
-            current_url= browser.current_url
-        except Exception as err:
-            print(err)
-    else:
-        print(' 6 pass')
-    print('7 Всего собрали дань: ', count, ' раз.')
-    time.sleep(10)
-    
-    #def do_patrol
-        #дозор, проводим
-        patrol_button = browser.find_element(By.XPATH, '//span[contains(text(), "Дозор")]')
-        print(patrol_button.text)
-        if patrol_button.text.strip() == 'Дозор':
-            print('Patrol time!')
-            patrol_button.click()
-            for i in range(5):
-                # собираем дань
-                take_button = browser.find_element(By.CSS_SELECTOR, 'div.main-button-inner')
-                take_button.click()
-                print('проводим дозор '+ str(i))
-            # кликаем на главную
-            main_button = browser.find_element(By.CSS_SELECTOR, 'a[href="/Land"]')
-            main_button.click()
-            print(main_button.text)
-        else:
-            print('It is not patrol time')
-        time.sleep(5)
-
-    #играем
-    while True:
-        #кликаем на главную
-        main_button = browser.find_element(By.CSS_SELECTOR, 'a[href="/Land"]')
-        main_button.click()
-        print(main_button.text)
-        try:
-            #кликаем владения
-            land_button = browser.find_element(By.XPATH, '//span[text()="Владения"]')
-            land_button.click()
-            print('land_button.text', land_button)
-            print('кликнули владения')
-        except NoSuchElementException as land_err:
-            print(land_err)
-        except StaleElementReferenceException as old_err:
-            print(old_err)
-    
-        try:
-            #собираем дань
-            take_button = browser.find_element(By.CSS_SELECTOR, 'a._marble')
-            take_button.click()
-            print('Собрали дань')
-        except NoSuchElementException as button_error:
-            print('button_error: дань с владений не готова', button_error)
-    
-    
-        #кликаем на главную
-        main_button = browser.find_element(By.CSS_SELECTOR, 'a[href="/Land"]')
-        main_button.click()
-        print(main_button.text)
-'''
