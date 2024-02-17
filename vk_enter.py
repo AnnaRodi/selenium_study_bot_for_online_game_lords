@@ -53,75 +53,22 @@ except Exception as entry_error:
 print('Вошли в игру')
 time.sleep(2)
 
-test_el = browser.find_element(By.TAG_NAME, 'html')
-info = test_el.text
-print(f'текст в элементе html до фрейма: ', test_el.text, '\n',
-              'frame attr: ', test_el.__dict__, '\n',
-              'tag_name: ', test_el.tag_name, '\n',       #tag_name:  iframe
-               'location ', test_el.location, '\n',       #location  {'x': 0, 'y': -19}
-               'id ', test_el.id )                        #id  B9EF7451B8ACA33C1D9362E2649F14DA_element_153
-i=1
+#переходим во фрейм
 try:
     # Store iframe web element
     frames = browser.find_elements(By.CSS_SELECTOR, "iframe")
-    ''' for frame in frames:
-        print(f'нашли айфрейм в цикле{i}', frame, '\n', #<selenium.webdriver.remote.webelement.WebElement (session="3de9f0e31bad5d04a19fb44e2b477acb",
-                                                        # element="B9EF7451B8ACA33C1D9362E2649F14DA_element_153")>
-              'frame attr: ', frame.__dict__, '\n',     # frame attr:  {'_parent': <selenium.webdriver.chrome.webdriver.WebDriver (session="3de9f0e31bad5d04a19fb44e2b477acb")>,
-                                                        # '_id': 'B9EF7451B8ACA33C1D9362E2649F14DA_element_153'}
-              'tag_name: ', frame.tag_name, '\n',       #tag_name:  iframe
-               'location ', frame.location, '\n',       #location  {'x': 0, 'y': -19}
-               'id ', frame.id, '\n',                         #id  B9EF7451B8ACA33C1D9362E2649F14DA_element_153
-               'text', frame.text)
-        print('browser.title', browser.title)
-        print('browser.current_url', browser.current_url)'''
-
     # switch to selected iframe
-    browser.switch_to.frame(i)
-    print(f'переключились на айфрейм цикл {i}')
-    print('browser.title', browser.title)
-    print('browser.current_url', browser.current_url)
-    print('time sleep')
-    time.sleep(5)
-    dives = browser.find_elements(By.TAG_NAME, "div")
-    land_button = browser.find_element(By.ID, 'menu-fields')
-    land_button.click()
-    print('land_button is clicked. time sleep')
-    time.sleep(5)
-    '''dives = browser.find_elements(By.TAG_NAME, "div")
-    for d in dives:
-        print(f'нашли div в цикле{i}', d, '\n',
-              'div attr: ', d.__dict__, '\n',
-              'tag_name: ', d.tag_name, '\n',  # tag_name:  iframe
-              'location ', d.location, '\n',  # location  {'x': 0, 'y': -19}
-              'id ','\n',                         #id  B9EF7451B8ACA33C1D9362E2649F14DA_element_153
-               'text', d.text)'''
-
-
-    browser.switch_to.default_content()
+    browser.switch_to.frame(1) #1 - это номер фрейма
 except Exception as er:
-    print(f'Iframe error{i}')
-'''time.sleep(2)
+    print(f'Iframe error')
 
-try:
-    test_el = browser.find_element(By.TAG_NAME, 'div')
+count_total = 0
+while True:
+    do_taverna_meet(browser)
+    print('ждем 1 сек')
+    go_home(browser)
+    time.sleep(1)
 
-    print(f'текст в элементе div цикл{i}: ', test_el)
-    main_button = browser.find_element(By.CSS_SELECTOR, 'a._main')
-    main_button.click()
-    print(f'main_button clicked цикл{i}')
-except Exception as play_error:
-    print(f' не нажалась play_error цикл{i}')
+    count_total+=1
+    print('Количество пройденных циклов', count_total)
 
-try:
-    main_button=browser.find_element(By.CSS_SELECTOR, 'a._main')
-    main_button.click()
-except Exception as er:
-    print(f'не нажалась a._main er цикл {i}')
-
-try:
-    button = WebDriverWait(browser, 5).until_not(EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[href="/Land"]')))
-except Exception as er:
-    print(f'не нажалась land err цикл{i}')
-
-print(info, type(info))'''
