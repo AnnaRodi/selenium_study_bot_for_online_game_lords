@@ -52,12 +52,14 @@ def do_patrol(browser):  # дозор проводим
             # кликаем на главную
             main_button = browser.find_element(By.CSS_SELECTOR, 'a[href="/Land"]')
             main_button.click()
+
+
             print(main_button.text)
         else:
             print('It is not patrol time')
         time.sleep(1)
     except Exception as err:
-        print('def do_patrol err: ', err)
+        print('def do_patrol err: ', err, 'type err: ', type(err))
     print('Сходили в дозор')
 
 
@@ -116,7 +118,6 @@ def do_taverna_meet(browser):  # встречи в таверне
 
     except Exception as err:
         print('do_taverna_meet error ', err)
-    time.sleep(1)
     print('Сходили в таверну')
 
 
@@ -142,7 +143,7 @@ def fight_glass_rat_raid(browser):
         raid_butt.click()
         raid_butt = browser.find_element(By.CSS_SELECTOR, 'a[href="/SingleRaid/NewYear2024"')
         raid_butt.click()
-        butt = browser.find_element(By.CSS_SELECTOR, 'div#lvl-37')
+        butt = browser.find_element(By.CSS_SELECTOR, 'div#lvl-37') #здесь меняем уровень
         butt.click()
         rat_health = browser.find_element(By.CSS_SELECTOR, '.combat-stats .text-left').text.strip()[:-1]
         print(rat_health)
@@ -156,4 +157,55 @@ def fight_glass_rat_raid(browser):
     except Exception as err:
         print('fight glass rat raid err: ', err)
     time.sleep(5)
+    print('Сразились в рейде с ледяными крысами')
+
+
+def attack(browser):  #подфункция для рейда - драка с противником до обнуления его здоровья
+    rat_health = browser.find_element(By.CSS_SELECTOR, '.combat-stats .text-left').text.strip()[:-1]
+    print('Здоровье противника: ', rat_health)
+    # пока есть здоровье противника
+    while rat_health:
+        try:
+            browser.find_element(By.CSS_SELECTOR, 'a[href="/SingleRaids/Hit"').click()
+            print('Атака!')
+        except:
+            print('Attack is None. /SingleRaids/Hit is None')
+        time.sleep(2)
+        print('sleep 2 sec')
+        if browser.find_element(By.CSS_SELECTOR, '.combat-stats .text-left').text.strip()[:-1]:
+            rat_health =browser.find_element(By.CSS_SELECTOR, '.combat-stats .text-left').text.strip()[:-1]
+            print('Здоровье противника после атаки:', rat_health)
+        else:
+            rat_health = None
+            print('rat_health = None')
+
+def fight_glass_rat_raid_85(browser):
+    # выбираем вкладку рейды
+    try:
+        browser.find_element(By.CSS_SELECTOR, 'a[href="/SingleRaids"').click()
+        print("нажали вкладку рейды")
+    except:
+        print("/SingleRaids is None")
+    # выбираем рейд ледяные глубины
+    attack(browser)
+    try:
+        browser.find_element(By.CSS_SELECTOR, 'a[href="/SingleRaid/NewYear2024"').click()
+        print("выбрали рейд SingleRaid/NewYear2024")
+    except:
+        print('SingleRaid/NewYear2024 is None')
+    #выбираем первый вариант рейда
+    try:
+        browser.find_element(By.CSS_SELECTOR, 'div#lvl-85').click() #здесь меняем уровень. 85 - первый вариант
+        print("выбрали уровень рейда div#lvl-85")
+        attack(browser)
+    except:
+        print("can't choose raid level div#lvl-85")
+    #кликаем следующий этап рейда
+    try:
+        #continue_butt = browser.find_element(By.XPATH, '//span[contains(text(), "Продолжить рейд")]')
+        browser.find_element(By.CSS_SELECTOR, 'a[href="/SingleRaids/NextStep"').click()
+        print("click continue button SingleRaids/NextStep")
+        attack(browser)
+    except:
+        print("Can't click continue button SingleRaids/NextStep")
     print('Сразились в рейде с ледяными крысами')
