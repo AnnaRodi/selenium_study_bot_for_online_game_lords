@@ -36,12 +36,18 @@ print('Вошли в игру')
 try:
     # Store iframe web element
     frames = browser.find_elements(By.CSS_SELECTOR, "iframe")
+
     # switch to selected iframe
-    browser.switch_to.frame(1) #1 - это номер фрейма
-    print('iframe: ', len(frames), frames)
-    count_frame = 0
-    for el in frames:
-        print(f'count_frame {count_frame}', el.text)
+    # почему то не хочет сразу фрейм(1) выбирать. только через переключение с фрейм(0)
+    browser.switch_to.frame(0) #1 - это номер фрейма
+    print('frame 0')
+    print(el.text for el in browser.find_elements(By.TAG_NAME, 'div'))
+    browser.switch_to.default_content()
+    browser.switch_to.frame(1)  # 1 - это номер фрейма
+    print('frame 1')
+    print(el.text for el in browser.find_elements(By.TAG_NAME, 'div'))
+
+
 except Exception as er:
     print(f'Iframe error')
 
